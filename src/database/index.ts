@@ -6,7 +6,7 @@ import { db } from '../config';
 // const dbURI = `mongodb://${db.user}:${encodeURIComponent(db.password)}@${
 //   db.host
 // }:${db.port}/${db.name}`;
-// const dbURI = "mongodb+srv://eryogeshsharma505:53sFbiFsqg3rnTLV@cluster0.qnbyopu.mongodb.net/vf-dev?retryWrites=true&w=majority"
+const dbURI = "mongodb://localhost:27017/vf-dev?retryWrites=true&w=majority"
 const options = {
     autoIndex: true,
     minPoolSize: db.minPoolSize, // Maintain up to x socket connections

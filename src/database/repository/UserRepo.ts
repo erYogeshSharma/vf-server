@@ -71,7 +71,9 @@ async function create(
 ): Promise<{ user: User; keystore: Keystore }> {
   const now = new Date();
 
-
+  // await RoleModel.create({
+  //   code :roleCode,status:true, createdAt:now, updatedAt:now
+  // })
   const role = await RoleModel.findOne({ code: roleCode })
     .select('+code')
     .lean()
