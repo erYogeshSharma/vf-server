@@ -1,42 +1,62 @@
 import { Schema, model, Types } from 'mongoose';
+import User from './User';
 export const DOCUMENT_NAME = 'Business';
 export const COLLECTION_NAME = 'businesses';
 
 export default interface Business {
-  _id: Types.ObjectId;
+  _id?: Types.ObjectId;
+  user?: User;
+
   linkId: string;
   name: string;
   title: string;
+  category: string;
   description: string;
   logo: string;
   coverImage: string;
   email: string;
   phone: number;
-  alternatePhone: number;
-  address: string;
-  country: string;
-  city: string;
-  state: string;
-  zipCode: number;
-  industry: string;
+  alternatePhone?: number;
 
-  isActive: boolean;
+  address?: string;
+  country?: string;
+  city?: string;
+  state?: string;
+  zipCode?: number;
+  industry?: string;
 
-  enableEnquiryForm: boolean;
-  enableAppointmentForm: boolean;
+  enableEnquiryForm?: boolean;
+  enableAppointmentForm?: boolean;
 
-  links: {
+  gallery?: string[];
+  products?: {
+    title: string;
+    image: string;
+  }[];
+
+  links?: {
     type: Types.ObjectId;
     link: string;
   }[];
 
+  isActive?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }
 
 const schema = new Schema<Business>(
   {
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+      index: true,
+    },
     name: {
+      type: Schema.Types.String,
+      required: true,
+    },
+    category: {
       type: Schema.Types.String,
       required: true,
     },
@@ -46,7 +66,6 @@ const schema = new Schema<Business>(
     },
     description: {
       type: Schema.Types.String,
-      required: true,
     },
     logo: {
       type: Schema.Types.String,
@@ -67,44 +86,38 @@ const schema = new Schema<Business>(
 
     alternatePhone: {
       type: Schema.Types.Number,
-      required: true,
     },
     address: {
       type: Schema.Types.String,
-      required: true,
     },
     country: {
       type: Schema.Types.String,
-      required: true,
     },
     city: {
       type: Schema.Types.String,
-      required: true,
     },
     state: {
       type: Schema.Types.String,
-      required: true,
     },
     zipCode: {
       type: Schema.Types.Number,
-      required: true,
     },
     industry: {
       type: Schema.Types.String,
-      required: true,
     },
 
     isActive: {
       type: Schema.Types.Boolean,
-      required: true,
+      default: true,
     },
+
     enableEnquiryForm: {
       type: Schema.Types.Boolean,
-      required: true,
+      default: true,
     },
     enableAppointmentForm: {
       type: Schema.Types.Boolean,
-      required: true,
+      default: true,
     },
 
     links: [
@@ -116,6 +129,23 @@ const schema = new Schema<Business>(
         link: {
           type: Schema.Types.String,
           required: true,
+        },
+      },
+    ],
+    gallery: [
+      {
+        type: Schema.Types.String,
+        required: false,
+      },
+    ],
+
+    products: [
+      {
+        title: {
+          type: Schema.Types.String,
+        },
+        image: {
+          type: Schema.Types.String,
         },
       },
     ],
@@ -138,7 +168,7 @@ const schema = new Schema<Business>(
 
 schema.index({ code: 1, status: 1 });
 
-export const RoleModel = model<Business>(
+export const BusinessModel = model<Business>(
   DOCUMENT_NAME,
   schema,
   COLLECTION_NAME,

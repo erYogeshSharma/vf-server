@@ -1,11 +1,9 @@
 import { Request } from 'express';
 import User from '../database/model/User';
 import Keystore from '../database/model/Keystore';
-import ApiKey from '../database/model/ApiKey';
+// import ApiKey from '../database/model/ApiKey';
 
-declare interface PublicRequest extends Request {
-  apiKey: ApiKey;
-}
+declare interface PublicRequest extends Request {}
 
 declare interface RoleRequest extends PublicRequest {
   currentRoleCodes: string[];
