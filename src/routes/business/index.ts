@@ -7,6 +7,7 @@ import BusinessRepo from '../../database/repository/BusinessRepo';
 import { BadRequestError } from '../../core/ApiError';
 import schema from './schema';
 import validator from '../../helpers/validator';
+import LinkRepo from '../../database/repository/LinkRepo';
 
 const router = express.Router();
 router.use(authentication);
@@ -28,12 +29,37 @@ router.post(
       logo: req.body.logo,
       coverImage: req.body.coverImage,
     });
+
     const data = req.body;
     const user = req.user;
 
     return new SuccessResponse('success', { user: user, payload: data }).send(
       res,
     );
+  }),
+);
+
+router.post(
+  '/link',
+  validator(schema.addLinkIcon),
+  asyncHandler(async (req: ProtectedRequest, res) => {
+    const createdLink = await LinkRepo.create({
+      title: req.body.title,
+      category: req.body.category,
+      isActive: true,
+      icon: req.body.icon,
+      createdBy: req.user,
+    });
+
+    return new SuccessResponse('success', createdLink).send(res);
+  }),
+);
+
+router.get(
+  '/links',
+  asyncHandler(async (req: ProtectedRequest, res) => {
+    const links = await LinkRepo.find(req.user._id);
+    return new SuccessResponse('success', links).send(res);
   }),
 );
 

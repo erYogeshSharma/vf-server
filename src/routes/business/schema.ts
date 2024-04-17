@@ -34,4 +34,9 @@ export default {
       )
       .has(Joi.object({ type: Joi.string(), link: Joi.string() })),
   }),
+  addLinkIcon: Joi.object().keys({
+    title: Joi.string().required(),
+    category: Joi.string().optional(),
+    icon: Joi.string().optional().uri(),
+  }),
 };
