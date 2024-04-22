@@ -15,7 +15,7 @@ export default interface Link {
   updatedAt?: Date;
   isMaster?: boolean;
 }
-
+const test = 'true';
 const schema = new Schema<Link>(
   {
     title: {
