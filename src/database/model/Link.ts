@@ -15,7 +15,7 @@ export default interface Link {
   updatedAt?: Date;
   isMaster?: boolean;
 }
-const test = 'true';
+
 const schema = new Schema<Link>(
   {
     title: {
@@ -38,20 +38,10 @@ const schema = new Schema<Link>(
       type: Schema.Types.Boolean,
       default: true,
     },
-    createdAt: {
-      type: Schema.Types.Date,
-      required: true,
-      select: false,
-    },
-    updatedAt: {
-      type: Schema.Types.Date,
-      required: true,
-      select: false,
-    },
+
     isMaster: {
       type: Schema.Types.Boolean,
       required: true,
-      //TODO: change this to false by default
       default: true,
     },
   },

@@ -1,13 +1,13 @@
 {
-  "name": "nodejs-backend-architecture",
+  "name": "merhant-live-server",
   "version": "2.0.1",
-  "description": "The architecture for nodejs backend application. It is build on top of expressjs using typescript.",
+  "description": "Server for merchantlive",
   "main": "index.js",
   "scripts": {
     "start": "npm run build && npm run serve",
     "serve": "node -r dotenv/config build/server.js",
     "build": "npm run clean && npm run build-ts",
-    "watch": "npx concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run watch-node\"",
+    "dev": "npx concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run watch-node\"",
     "watch-node": "nodemon -r dotenv/config build/server.js",
     "clean": "rimraf ./build",
     "build-ts": "tsc",
@@ -20,11 +20,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/janishar/nodejs-backend-architecture-typescript.git"
+    "url": "https://github.com/erYogeshSharma/vf-server.git"
   },
-  "author": "Janishar Ali",
+  "author": "Yogesh Sharma",
   "license": "Apache-2.0",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.574.0",
+    "@aws-sdk/s3-request-presigner": "^3.574.0",
     "axios": "^1.6.5",
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.6",

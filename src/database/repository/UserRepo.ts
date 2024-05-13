@@ -1,6 +1,5 @@
 import User, { UserModel } from '../model/User';
 import { RoleModel } from '../model/Role';
-import { InternalError } from '../../core/ApiError';
 import { Types } from 'mongoose';
 import KeystoreRepo from './KeystoreRepo';
 import Keystore from '../model/Keystore';
@@ -71,16 +70,22 @@ async function create(
 ): Promise<{ user: User; keystore: Keystore }> {
   const now = new Date();
 
-  // await RoleModel.create({
-  //   code :roleCode,status:true, createdAt:now, updatedAt:now
-  // })
   const role = await RoleModel.findOne({ code: roleCode })
     .select('+code')
     .lean()
     .exec();
-  if (!role) throw new InternalError('Role must be defined');
+  // if (!role) throw new InternalError('Role must be defined');
+  if (!role) {
+    const r = await RoleModel.create({
+      code: roleCode,
+      status: true,
+      createdAt: now,
+      updatedAt: now,
+    });
 
-  user.roles = [role];
+    user.roles = [r];
+  }
+
   user.createdAt = user.updatedAt = now;
   const createdUser = await UserModel.create(user);
   const keystore = await KeystoreRepo.create(

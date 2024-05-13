@@ -5,6 +5,7 @@ import { Types } from 'mongoose';
 import User from '../database/model/User';
 import { tokenInfo } from '../config';
 
+//Returns authToken from request
 export const getAccessToken = (authorization?: string) => {
   if (!authorization) throw new AuthFailureError('Invalid Authorization');
   if (!authorization.startsWith('Bearer '))
@@ -12,6 +13,7 @@ export const getAccessToken = (authorization?: string) => {
   return authorization.split(' ')[1];
 };
 
+//validates token data
 export const validateTokenData = (payload: JwtPayload): boolean => {
   if (
     !payload ||

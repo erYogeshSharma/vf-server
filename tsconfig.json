@@ -24,6 +24,9 @@
       "*": ["node_modules/*", "src/types/*"]
     }
   },
-  "include": ["src/**/*"],
+  "preferences": {
+    "importModuleSpecifier": "relative"
+  },
+  "include": ["src/**/*", "enviroment.d.ts"],
   "exclude": [".templates"]
 }

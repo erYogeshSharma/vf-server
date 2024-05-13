@@ -17,13 +17,13 @@ export default interface Business {
   email: string;
   phone: number;
   alternatePhone?: number;
+  googleMapLink?: string;
 
   address?: string;
   country?: string;
   city?: string;
   state?: string;
   zipCode?: number;
-  industry?: string;
 
   enableEnquiryForm?: boolean;
   enableAppointmentForm?: boolean;
@@ -40,8 +40,6 @@ export default interface Business {
   }[];
 
   isActive?: boolean;
-  createdAt?: Date;
-  updatedAt?: Date;
 }
 
 const schema = new Schema<Business>(
@@ -67,6 +65,9 @@ const schema = new Schema<Business>(
     description: {
       type: Schema.Types.String,
     },
+    googleMapLink: {
+      type: Schema.Types.String,
+    },
     logo: {
       type: Schema.Types.String,
       required: true,
@@ -87,6 +88,10 @@ const schema = new Schema<Business>(
     alternatePhone: {
       type: Schema.Types.Number,
     },
+    linkId: {
+      type: Schema.Types.String,
+      required: true,
+    },
     address: {
       type: Schema.Types.String,
     },
@@ -101,9 +106,6 @@ const schema = new Schema<Business>(
     },
     zipCode: {
       type: Schema.Types.Number,
-    },
-    industry: {
-      type: Schema.Types.String,
     },
 
     isActive: {
@@ -149,16 +151,6 @@ const schema = new Schema<Business>(
         },
       },
     ],
-    createdAt: {
-      type: Schema.Types.Date,
-      required: true,
-      select: false,
-    },
-    updatedAt: {
-      type: Schema.Types.Date,
-      required: true,
-      select: false,
-    },
   },
   {
     versionKey: false,

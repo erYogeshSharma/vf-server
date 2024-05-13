@@ -35,16 +35,6 @@ const schema = new Schema<Keystore>(
       type: Schema.Types.Boolean,
       default: true,
     },
-    createdAt: {
-      type: Schema.Types.Date,
-      required: true,
-      select: false,
-    },
-    updatedAt: {
-      type: Schema.Types.Date,
-      required: true,
-      select: false,
-    },
   },
   {
     versionKey: false,
