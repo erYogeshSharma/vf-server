@@ -40,6 +40,7 @@ router.post(
     return new SuccessResponse('success', createdBusiness).send(res);
   }),
 );
+
 router.patch(
   '/update',
   validator(schema.businessCreate),
@@ -67,6 +68,18 @@ router.patch(
   validator(schema.updateAddress),
   asyncHandler(async (req: ProtectedRequest, res) => {
     const updatedBusiness = await BusinessRepo.updateAddress(
+      req.user._id.toString(),
+      req.body,
+    );
+    return new SuccessResponse('success', updatedBusiness).send(res);
+  }),
+);
+
+router.patch(
+  '/update-calender',
+  validator(schema.updateCalender),
+  asyncHandler(async (req: ProtectedRequest, res) => {
+    const updatedBusiness = await BusinessRepo.updateCalender(
       req.user._id.toString(),
       req.body,
     );
@@ -114,7 +127,6 @@ router.post(
     const exists = await BusinessRepo.findUrlIfExists(
       req.body.linkId as string,
     );
-    console.log(exists);
     if (!exists) {
       return new FailureMsgResponse(`Link : ${req.body.linkId} not available`);
     }

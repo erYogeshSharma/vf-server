@@ -10,7 +10,6 @@ async function update(
   userId: string,
   business: Business,
 ): Promise<Business | null> {
-  console.log(business);
   try {
     const updatedBusiness = await BusinessModel.findOneAndUpdate(
       { user: userId, _id: business._id },
@@ -20,10 +19,8 @@ async function update(
       .lean()
       .exec();
 
-    console.log(updatedBusiness);
     return updatedBusiness;
   } catch (error) {
-    console.log(error);
     throw new BadRequestError(error as string);
   }
 }
@@ -39,6 +36,18 @@ async function getBusinessById(id: string): Promise<Business | null> {
   const business = await BusinessModel.findById(id).lean().exec();
   return business;
 }
+
+async function getBusinessByLinkId(linkId: string): Promise<Business | null> {
+  try {
+    const business = await BusinessModel.findOne({ linkId: linkId })
+      .lean()
+      .exec();
+    return business;
+  } catch (error) {
+    throw new BadRequestError(error as string);
+  }
+}
+
 async function getAllUserBusiness(userId: string): Promise<Business[]> {
   //only select the fields that are needed
 
@@ -80,15 +89,31 @@ async function updateProducts(
   products: { _id: string; products: { title: string; image: string }[] },
 ): Promise<Business | null> {
   try {
+    // Check if the product array has changed
+    const existingBusiness = await BusinessModel.findOne({
+      user: userId,
+      _id: products._id,
+    })
+      .lean()
+      .exec();
+    if (
+      existingBusiness &&
+      JSON.stringify(existingBusiness.products) ===
+        JSON.stringify(products.products)
+    ) {
+      // Product array is the same, no need to update
+      return existingBusiness;
+    }
+
+    // Perform the update
     const updatedBusiness = await BusinessModel.findOneAndUpdate(
       { user: userId, businessId: products._id },
-      {
-        products: products.products,
-      },
+      { products: products.products },
       { new: true },
     )
       .lean()
       .exec();
+
     return updatedBusiness;
   } catch (error) {
     throw new BadRequestError(error as string);
@@ -100,8 +125,9 @@ async function updateLinks(
   links: { _id: string; links: { type: string; link: string }[] },
 ): Promise<Business | null> {
   try {
+    console.log({ links });
     const updatedBusiness = await BusinessModel.findOneAndUpdate(
-      { user: userId, businessId: links._id },
+      { user: userId, _id: links._id },
       {
         links: links.links,
       },
@@ -109,6 +135,8 @@ async function updateLinks(
     )
       .lean()
       .exec();
+
+    console.log({ updatedBusiness });
     return updatedBusiness;
   } catch (error) {
     throw new BadRequestError(error as string);
@@ -121,7 +149,7 @@ async function updateGallery(
 ): Promise<Business | null> {
   try {
     const updatedBusiness = await BusinessModel.findOneAndUpdate(
-      { user: userId, businessId: gallery._id },
+      { user: userId, _id: gallery._id },
       {
         gallery: gallery.gallery,
       },
@@ -145,7 +173,7 @@ async function updateSettings(
 ): Promise<Business | null> {
   try {
     const updatedBusiness = await BusinessModel.findOneAndUpdate(
-      { user: userId, businessId: settings._id },
+      { user: userId, _id: settings._id },
       {
         enableEnquiryForm: settings.enableEnquiryForm,
         enableAppointmentForm: settings.enableAppointmentForm,
@@ -160,6 +188,27 @@ async function updateSettings(
     throw new BadRequestError(error as string);
   }
 }
+
+async function updateCalender(
+  userId: string,
+  calender: { _id: string; calender: string },
+): Promise<Business | null> {
+  try {
+    const updatedBusiness = await BusinessModel.findOneAndUpdate(
+      { user: userId, _id: calender._id },
+      {
+        calender: calender.calender,
+      },
+      { new: true },
+    )
+      .lean()
+      .exec();
+    return updatedBusiness;
+  } catch (error) {
+    throw new BadRequestError(error as string);
+  }
+}
+
 export default {
   update,
   create,
@@ -171,4 +220,6 @@ export default {
   updateProducts,
   updateGallery,
   updateSettings,
+  getBusinessByLinkId,
+  updateCalender,
 };

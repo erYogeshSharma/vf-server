@@ -40,11 +40,11 @@ export default {
       .optional()
       .items(
         Joi.object({
-          title: Joi.string(),
-          image: Joi.string(),
+          _id: Joi.string().optional(),
+          title: Joi.string().required(),
+          image: Joi.string().required(),
         }),
-      )
-      .has(Joi.object({ title: Joi.string(), image: Joi.string() })),
+      ),
   }),
 
   updateGallery: Joi.object().keys({
@@ -58,17 +58,21 @@ export default {
       .optional()
       .items(
         Joi.object({
+          _id: Joi.string().optional(),
           type: Joi.string(),
           link: Joi.string(),
         }),
-      )
-      .has(Joi.object({ type: Joi.string(), link: Joi.string() })),
+      ),
   }),
 
   updateSettings: Joi.object().keys({
     _id: Joi.string().required(),
     enableEnquiryForm: Joi.boolean().required(),
     enableAppointmentForm: Joi.boolean().required(),
+  }),
+  updateCalender: Joi.object().keys({
+    _id: Joi.string().required(),
+    calender: Joi.string().required(),
   }),
 
   addLinkIcon: Joi.object().keys({

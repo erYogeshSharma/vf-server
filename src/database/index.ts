@@ -3,9 +3,9 @@ import Logger from '../core/Logger';
 import { db } from '../config';
 
 // Build the connection string
-const dbURI = db.uri;
+// const dbURI = db.uri;
 //TODO add in env
-// const dbURI = 'mongodb://localhost:27017/vf-dev?retryWrites=true&w=majority';
+const dbURI = 'mongodb://localhost:27017/vf-dev?retryWrites=true&w=majority';
 const options = {
   autoIndex: true,
   minPoolSize: db.minPoolSize, // Maintain up to x socket connections

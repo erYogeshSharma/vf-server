@@ -39,6 +39,8 @@ export default interface Business {
     link: string;
   }[];
 
+  calender: string;
+
   isActive?: boolean;
 }
 
@@ -151,6 +153,11 @@ const schema = new Schema<Business>(
         },
       },
     ],
+
+    calender: {
+      type: Schema.Types.String,
+      default: `{"mon":"T-9:00-5:00-AM","tue":"T-9:00-5:00-AM","wed":"T-9:00-5:00-AM","thu":"T-9:00-5:00-AM","fri":"T-9:00-5:00-AM","sat":"T-9:00-5:00-AM","sun":"T-9:00-5:00-AM"}`,
+    },
   },
   {
     versionKey: false,
