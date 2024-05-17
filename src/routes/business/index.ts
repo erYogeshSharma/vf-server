@@ -113,6 +113,7 @@ router.get(
   '/details/:id',
   asyncHandler(async (req: ProtectedRequest, res) => {
     const business = await BusinessRepo.getBusinessById(req.params.id);
+
     if (!business) {
       return new FailureMsgResponse('Business not found').send(res);
     }

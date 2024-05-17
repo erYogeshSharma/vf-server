@@ -18,7 +18,6 @@ async function update(
     )
       .lean()
       .exec();
-
     return updatedBusiness;
   } catch (error) {
     throw new BadRequestError(error as string);
@@ -33,13 +32,19 @@ async function findUrlIfExists(linkId: string): Promise<Business | null> {
 }
 
 async function getBusinessById(id: string): Promise<Business | null> {
-  const business = await BusinessModel.findById(id).lean().exec();
-  return business;
+  try {
+    const business = await BusinessModel.findById(id).lean().exec();
+    console.log({ business });
+    return business;
+  } catch (error) {
+    throw new BadRequestError(error as string);
+  }
 }
 
 async function getBusinessByLinkId(linkId: string): Promise<Business | null> {
   try {
     const business = await BusinessModel.findOne({ linkId: linkId })
+      .populate('links.type')
       .lean()
       .exec();
     return business;

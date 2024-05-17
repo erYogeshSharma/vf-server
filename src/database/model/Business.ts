@@ -32,6 +32,7 @@ export default interface Business {
   products?: {
     title: string;
     image: string;
+    description?: string;
   }[];
 
   links?: {
@@ -149,6 +150,9 @@ const schema = new Schema<Business>(
           type: Schema.Types.String,
         },
         image: {
+          type: Schema.Types.String,
+        },
+        description: {
           type: Schema.Types.String,
         },
       },

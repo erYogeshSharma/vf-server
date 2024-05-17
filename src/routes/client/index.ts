@@ -15,7 +15,7 @@ router.get(
     }
 
     const business = await BusinessRepo.getBusinessByLinkId(id);
-
+    console.log(business);
     if (!business) {
       return new FailureMsgResponse('Not found').send(res);
     }
