@@ -27,6 +27,7 @@ export default interface Business {
 
   enableEnquiryForm?: boolean;
   enableAppointmentForm?: boolean;
+  theme: string;
 
   gallery?: string[];
   products?: {
@@ -144,6 +145,10 @@ const schema = new Schema<Business>(
       },
     ],
 
+    theme: {
+      type: Schema.Types.String,
+      default: 'light',
+    },
     products: [
       {
         title: {

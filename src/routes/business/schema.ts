@@ -43,6 +43,7 @@ export default {
           _id: Joi.string().optional(),
           title: Joi.string().required(),
           image: Joi.string().required(),
+          description: Joi.string().required(),
         }),
       ),
   }),

@@ -9,12 +9,15 @@ import media from './media';
 import client from './client';
 import createEnquiry from './enquiry/create';
 import getEnquiries from './enquiry/getEnquiry';
+import forgotPassword from './auth/forgot-password';
 const router = express.Router();
 
 router.use('/signup', auth);
 router.use('/login', login);
 router.use('/logout', logout);
 router.use('/token', token);
+router.use('/forgot-password', forgotPassword);
+
 router.use('/business', business);
 router.use('/client', client);
 router.use('/media', media);

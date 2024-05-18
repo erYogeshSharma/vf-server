@@ -26,7 +26,7 @@ async function findPrivateProfileById(
 // contains critical information of the user
 async function findById(id: Types.ObjectId): Promise<User | null> {
   return UserModel.findOne({ _id: id, status: true })
-    .select('+email +password +roles')
+    .select('+email +password +roles +resetPasswordToken')
     .populate({
       path: 'roles',
       match: { status: true },
@@ -116,7 +116,7 @@ async function update(
   return { user: user, keystore: keystore };
 }
 
-async function updateInfo(user: User): Promise<any> {
+async function updateInfo(user: Partial<User>): Promise<any> {
   user.updatedAt = new Date();
   return UserModel.updateOne({ _id: user._id }, { $set: { ...user } })
     .lean()

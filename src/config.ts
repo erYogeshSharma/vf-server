@@ -48,3 +48,14 @@ export const AWS = {
   mediaS3bucket: process.env.MEDIA_S3_BUCKET,
   mediaCloudFrontURL: process.env.MEDIA_CLOUDFRNT_URL,
 };
+
+export const sg = {
+  apiKey: process.env.SENDGRID_API_KEY,
+  mailFrom: process.env.MAIL_FROM,
+  templates: {},
+};
+
+export const app = {
+  clientURL: process.env.CLIENT_URL,
+  serverURL: process.env.SERVER_URL,
+};

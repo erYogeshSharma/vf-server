@@ -14,6 +14,8 @@ export default interface User {
   verified?: boolean;
   status?: boolean;
   createdAt?: Date;
+
+  resetPasswordToken?: string;
   updatedAt?: Date;
 }
 
@@ -39,6 +41,11 @@ const schema = new Schema<User>(
       type: Schema.Types.String,
       select: false,
     },
+    resetPasswordToken: {
+      type: Schema.Types.String,
+      select: false,
+    },
+
     roles: {
       type: [
         {
