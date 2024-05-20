@@ -68,8 +68,9 @@ export default {
 
   updateSettings: Joi.object().keys({
     _id: Joi.string().required(),
-    enableEnquiryForm: Joi.boolean().required(),
-    enableAppointmentForm: Joi.boolean().required(),
+    enableEnquiryForm: Joi.boolean().optional(),
+    enableAppointmentForm: Joi.boolean().optional(),
+    theme: Joi.string().optional(),
   }),
   updateCalender: Joi.object().keys({
     _id: Joi.string().required(),

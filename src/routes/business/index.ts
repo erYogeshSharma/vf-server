@@ -17,6 +17,29 @@ import Business from '../../database/model/Business';
 const router = express.Router();
 router.use(authentication);
 
+/* -------------------------------------------------------------------------- */
+/*                         GET BUSINESS ID AVAILABILITY                        */
+/* -------------------------------------------------------------------------- */
+router.post(
+  '/id-availability',
+  validator(schema.checkLinkAvailable),
+  asyncHandler(async (req: ProtectedRequest, res) => {
+    const exists = await BusinessRepo.findUrlIfExists(
+      req.body.linkId as string,
+    );
+    if (!exists) {
+      return new FailureMsgResponse(`Link : ${req.body.linkId} not available`);
+    }
+
+    return new SuccessMsgResponse(`Link: ${req.body.linkId} is available`).send(
+      res,
+    );
+  }),
+);
+
+/* -------------------------------------------------------------------------- */
+/*                              CREATE A BUSINESS                             */
+/* -------------------------------------------------------------------------- */
 router.post(
   '/create',
   validator(schema.businessCreate),
@@ -40,7 +63,39 @@ router.post(
     return new SuccessResponse('success', createdBusiness).send(res);
   }),
 );
+/* -------------------------------------------------------------------------- */
+/*                                GET ALL BUSINESS                               */
+/* -------------------------------------------------------------------------- */
+router.get(
+  '/all',
+  asyncHandler(async (req: ProtectedRequest, res) => {
+    console.log(req.user);
+    const business = await BusinessRepo.getAllUserBusiness(
+      req.user._id.toString(),
+    );
+    console.log(business);
+    return new SuccessResponse('success', business).send(res);
+  }),
+);
 
+/* -------------------------------------------------------------------------- */
+/*                            GET BUSINESS DETAILS                            */
+/* -------------------------------------------------------------------------- */
+router.get(
+  '/details/:id',
+  asyncHandler(async (req: ProtectedRequest, res) => {
+    const business = await BusinessRepo.getBusinessById(req.params.id);
+
+    if (!business) {
+      return new FailureMsgResponse('Business not found').send(res);
+    }
+    return new SuccessResponse('success', business).send(res);
+  }),
+);
+
+/* -------------------------------------------------------------------------- */
+/*                        UPDATE BUSINESS BASIC DETAILS                       */
+/* -------------------------------------------------------------------------- */
 router.patch(
   '/update',
   validator(schema.businessCreate),
@@ -63,6 +118,9 @@ router.patch(
   }),
 );
 
+/* -------------------------------------------------------------------------- */
+/*                               UPDATE ADDRESS                               */
+/* -------------------------------------------------------------------------- */
 router.patch(
   '/update-address',
   validator(schema.updateAddress),
@@ -75,6 +133,9 @@ router.patch(
   }),
 );
 
+/* -------------------------------------------------------------------------- */
+/*                               UPDATE CALENDER                              */
+/* -------------------------------------------------------------------------- */
 router.patch(
   '/update-calender',
   validator(schema.updateCalender),
@@ -87,57 +148,23 @@ router.patch(
   }),
 );
 
+/* -------------------------------------------------------------------------- */
+/*                               UPDATE GALLERY                               */
+/* -------------------------------------------------------------------------- */
 router.patch(
-  '/update-links',
-  validator(schema.updateLinks),
+  '/update-gallery',
+  validator(schema.updateGallery),
   asyncHandler(async (req: ProtectedRequest, res) => {
-    const updatedBusiness = await BusinessRepo.updateLinks(
+    const updatedBusiness = await BusinessRepo.updateGallery(
       req.user._id.toString(),
       req.body,
     );
     return new SuccessResponse('success', updatedBusiness).send(res);
   }),
 );
-
-router.get(
-  '/all',
-  asyncHandler(async (req: ProtectedRequest, res) => {
-    const business = await BusinessRepo.getAllUserBusiness(
-      req.user._id.toString(),
-    );
-    return new SuccessResponse('success', business).send(res);
-  }),
-);
-
-router.get(
-  '/details/:id',
-  asyncHandler(async (req: ProtectedRequest, res) => {
-    const business = await BusinessRepo.getBusinessById(req.params.id);
-
-    if (!business) {
-      return new FailureMsgResponse('Business not found').send(res);
-    }
-    return new SuccessResponse('success', business).send(res);
-  }),
-);
-
-router.post(
-  '/id-availability',
-  validator(schema.checkLinkAvailable),
-  asyncHandler(async (req: ProtectedRequest, res) => {
-    const exists = await BusinessRepo.findUrlIfExists(
-      req.body.linkId as string,
-    );
-    if (!exists) {
-      return new FailureMsgResponse(`Link : ${req.body.linkId} not available`);
-    }
-
-    return new SuccessMsgResponse(`Link: ${req.body.linkId} is available`).send(
-      res,
-    );
-  }),
-);
-
+/* -------------------------------------------------------------------------- */
+/*                               UPDATE PRODUCTS                              */
+/* -------------------------------------------------------------------------- */
 router.patch(
   '/update-products',
   validator(schema.updateProducts),
@@ -150,11 +177,14 @@ router.patch(
   }),
 );
 
+/* -------------------------------------------------------------------------- */
+/*                                UPDATE LINKS                                */
+/* -------------------------------------------------------------------------- */
 router.patch(
-  '/update-gallery',
-  validator(schema.updateGallery),
+  '/update-links',
+  validator(schema.updateLinks),
   asyncHandler(async (req: ProtectedRequest, res) => {
-    const updatedBusiness = await BusinessRepo.updateGallery(
+    const updatedBusiness = await BusinessRepo.updateLinks(
       req.user._id.toString(),
       req.body,
     );
@@ -162,6 +192,19 @@ router.patch(
   }),
 );
 
+/* -------------------------------------------------------------------------- */
+/*                                GET ALL LINKS                               */
+/* -------------------------------------------------------------------------- */
+router.get(
+  '/links',
+  asyncHandler(async (req: ProtectedRequest, res) => {
+    const links = await LinkRepo.find(req.user._id);
+    return new SuccessResponse('success', links).send(res);
+  }),
+);
+/* -------------------------------------------------------------------------- */
+/*                             CREATE A LINK OPTION                            */
+/* -------------------------------------------------------------------------- */
 router.post(
   '/link',
   validator(schema.addLinkIcon),
@@ -176,8 +219,10 @@ router.post(
     return new SuccessResponse('success', createdLink).send(res);
   }),
 );
-
-router.post(
+/* -------------------------------------------------------------------------- */
+/*                          UPDATE BUSINESS SETTINGS                          */
+/* -------------------------------------------------------------------------- */
+router.patch(
   '/update-settings',
   validator(schema.updateSettings),
   asyncHandler(async (req: ProtectedRequest, res) => {
@@ -186,14 +231,6 @@ router.post(
       req.body,
     );
     return new SuccessResponse('success', updatedBusiness).send(res);
-  }),
-);
-
-router.get(
-  '/links',
-  asyncHandler(async (req: ProtectedRequest, res) => {
-    const links = await LinkRepo.find(req.user._id);
-    return new SuccessResponse('success', links).send(res);
   }),
 );
 

@@ -34,7 +34,6 @@ async function findUrlIfExists(linkId: string): Promise<Business | null> {
 async function getBusinessById(id: string): Promise<Business | null> {
   try {
     const business = await BusinessModel.findById(id).lean().exec();
-    console.log({ business });
     return business;
   } catch (error) {
     throw new BadRequestError(error as string);
@@ -57,7 +56,7 @@ async function getAllUserBusiness(userId: string): Promise<Business[]> {
   //only select the fields that are needed
 
   const businesses = await BusinessModel.find({ user: userId })
-    .select('logo coverImage name linkId isActive title')
+    .select('logo coverImage name linkId isActive title theme')
     .lean()
     .exec();
   return businesses;
@@ -130,7 +129,6 @@ async function updateLinks(
   links: { _id: string; links: { type: string; link: string }[] },
 ): Promise<Business | null> {
   try {
-    console.log({ links });
     const updatedBusiness = await BusinessModel.findOneAndUpdate(
       { user: userId, _id: links._id },
       {
@@ -141,7 +139,6 @@ async function updateLinks(
       .lean()
       .exec();
 
-    console.log({ updatedBusiness });
     return updatedBusiness;
   } catch (error) {
     throw new BadRequestError(error as string);
@@ -174,6 +171,7 @@ async function updateSettings(
     _id: string;
     enableEnquiryForm: boolean;
     enableAppointmentForm: boolean;
+    theme: string;
   },
 ): Promise<Business | null> {
   try {
@@ -182,6 +180,7 @@ async function updateSettings(
       {
         enableEnquiryForm: settings.enableEnquiryForm,
         enableAppointmentForm: settings.enableAppointmentForm,
+        theme: settings.theme,
       },
       { new: true },
     )

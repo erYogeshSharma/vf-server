@@ -118,9 +118,14 @@ async function update(
 
 async function updateInfo(user: Partial<User>): Promise<any> {
   user.updatedAt = new Date();
-  return UserModel.updateOne({ _id: user._id }, { $set: { ...user } })
+  const updatedUser = await UserModel.findOneAndUpdate(
+    { _id: user._id },
+    { $set: { ...user } },
+    { new: true },
+  )
     .lean()
     .exec();
+  return updatedUser;
 }
 
 export default {
