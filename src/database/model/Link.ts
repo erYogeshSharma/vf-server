@@ -1,5 +1,4 @@
 import { Schema, model, Types } from 'mongoose';
-import User from './User';
 
 export const DOCUMENT_NAME = 'Link';
 export const COLLECTION_NAME = 'links';
@@ -10,7 +9,7 @@ export default interface Link {
   category: string;
   isActive: boolean;
   icon: string;
-  createdBy?: User;
+  createdBy?: Types.ObjectId;
   createdAt?: Date;
   updatedAt?: Date;
   isMaster?: boolean;

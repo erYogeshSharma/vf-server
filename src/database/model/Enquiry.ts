@@ -1,5 +1,4 @@
 import { Schema, model, Types } from 'mongoose';
-import Business from './Business';
 
 export const DOCUMENT_NAME = 'Enquiry';
 export const COLLECTION_NAME = 'enquiries';
@@ -10,7 +9,8 @@ export default interface Enquiry {
   email: string;
   contact: number;
   message: string;
-  business?: Business;
+  business?: Types.ObjectId;
+  isSolved?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -36,6 +36,10 @@ const schema = new Schema<Enquiry>(
     contact: {
       type: Schema.Types.Number,
       required: false,
+    },
+    isSolved: {
+      type: Schema.Types.Boolean,
+      default: false,
     },
   },
   {

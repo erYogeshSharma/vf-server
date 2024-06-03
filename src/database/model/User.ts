@@ -14,7 +14,7 @@ export default interface User {
   verified?: boolean;
   status?: boolean;
   createdAt?: Date;
-
+  business?: Types.ObjectId;
   resetPasswordToken?: string;
   updatedAt?: Date;
 }
@@ -30,6 +30,7 @@ const schema = new Schema<User>(
       type: Schema.Types.String,
       trim: true,
     },
+
     email: {
       type: Schema.Types.String,
       unique: true,
@@ -45,7 +46,11 @@ const schema = new Schema<User>(
       type: Schema.Types.String,
       select: false,
     },
-
+    business: {
+      type: Schema.Types.ObjectId,
+      ref: 'Business',
+      required: false,
+    },
     roles: {
       type: [
         {
@@ -71,7 +76,5 @@ const schema = new Schema<User>(
 );
 
 schema.index({ _id: 1, status: 1 });
-schema.index({ email: 1 });
-schema.index({ status: 1 });
 
 export const UserModel = model<User>(DOCUMENT_NAME, schema, COLLECTION_NAME);

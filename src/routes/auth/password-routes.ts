@@ -18,7 +18,7 @@ import { Types } from 'mongoose';
 const router = express.Router();
 
 router.post(
-  '/',
+  '/forgot',
   validator(schema.forgotPassword),
   asyncHandler(async (req: PublicRequest, res) => {
     const email = req.body.email;
@@ -48,7 +48,7 @@ router.post(
     });
 
     const emailData = {
-      from: { email: sg.mailFrom, name: 'Team Zapminds' },
+      from: { email: sg.mailFrom, name: 'MerchantLive' },
       to: user.email,
       subject: 'Reset you password',
       html: `<strong>To reset your password  <a href="${app.clientURL}/reset-password/${resetPasswordToken}"> </a>${app.clientURL}/reset-password/${resetPasswordToken} </strong>`,

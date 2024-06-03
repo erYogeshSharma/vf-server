@@ -1,5 +1,4 @@
 import { Schema, model, Types } from 'mongoose';
-import User from './User';
 
 export const DOCUMENT_NAME = 'Customer Feedback';
 export const COLLECTION_NAME = 'feedbacks';
@@ -7,7 +6,7 @@ export const COLLECTION_NAME = 'feedbacks';
 export default interface Feedback {
   _id?: Types.ObjectId;
   message: string;
-  user?: User;
+  user?: Types.ObjectId;
   createdAt?: Date;
   updatedAt?: Date;
 }

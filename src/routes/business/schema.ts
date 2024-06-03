@@ -2,7 +2,14 @@ import Joi from 'joi';
 
 export default {
   businessCreate: Joi.object().keys({
-    _id: Joi.string().optional(),
+    logo: Joi.string().required().min(3).max(500),
+    linkId: Joi.string().required().min(3).max(50),
+    name: Joi.string().required().min(3).max(50),
+    category: Joi.string().optional().required().min(3).max(500),
+  }),
+
+  basicDetailsUpdate: Joi.object().keys({
+    _id: Joi.string().required(),
     logo: Joi.string().required().min(3).max(500),
     coverImage: Joi.string().required().min(3).max(500),
 
@@ -84,5 +91,43 @@ export default {
   }),
   checkLinkAvailable: Joi.object().keys({
     linkId: Joi.string().required(),
+  }),
+
+  /* -------------------------------------------------------------------------- */
+  /*                                   CLIENT                                   */
+  /* -------------------------------------------------------------------------- */
+  addEnquiry: Joi.object().keys({
+    name: Joi.string().required().min(3).max(50),
+    email: Joi.string().required().min(3).max(500),
+    contact: Joi.number().required().min(1000000000).max(9999999999),
+    message: Joi.string().required().min(3).max(100000),
+  }),
+
+  logVisit: Joi.object().keys({
+    ip: Joi.string().required().min(3).max(50),
+    userAgent: Joi.string().required().min(3).max(500),
+  }),
+  /* -------------------------------------------------------------------------- */
+  /*                                 OFFER                                */
+  /* -------------------------------------------------------------------------- */
+  updateEnquiryStatus: Joi.object().keys({
+    isSolved: Joi.boolean().required(),
+  }),
+
+  addOffer: Joi.object().keys({
+    title: Joi.string().required().min(3).max(50),
+    description: Joi.string().required().min(3).max(500),
+    image: Joi.string().required().min(3).max(500),
+    startsOn: Joi.date().required(),
+    endsOn: Joi.date().required(),
+  }),
+  updateOffer: Joi.object().keys({
+    _id: Joi.string().required(),
+    title: Joi.string().optional().min(3).max(50),
+    description: Joi.string().optional().min(3).max(500),
+    image: Joi.string().optional().min(3).max(500),
+    isActive: Joi.boolean().optional(),
+    startsOn: Joi.date().optional(),
+    endsOn: Joi.date().optional(),
   }),
 };

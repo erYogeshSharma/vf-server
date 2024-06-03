@@ -3,30 +3,17 @@ import { RoleModel } from '../model/Role';
 import { Types } from 'mongoose';
 import KeystoreRepo from './KeystoreRepo';
 import Keystore from '../model/Keystore';
+import { BadRequestError } from '../../core/ApiError';
 
 async function exists(id: Types.ObjectId): Promise<boolean> {
   const user = await UserModel.exists({ _id: id, status: true });
   return user !== null && user !== undefined;
 }
 
-async function findPrivateProfileById(
-  id: Types.ObjectId,
-): Promise<User | null> {
-  return UserModel.findOne({ _id: id, status: true })
-    .select('+email')
-    .populate({
-      path: 'roles',
-      match: { status: true },
-      select: { code: 1 },
-    })
-    .lean<User>()
-    .exec();
-}
-
 // contains critical information of the user
 async function findById(id: Types.ObjectId): Promise<User | null> {
   return UserModel.findOne({ _id: id, status: true })
-    .select('+email +password +roles +resetPasswordToken')
+    .select('+email +password +roles +resetPasswordToken +business')
     .populate({
       path: 'roles',
       match: { status: true },
@@ -117,20 +104,22 @@ async function update(
 }
 
 async function updateInfo(user: Partial<User>): Promise<any> {
-  user.updatedAt = new Date();
-  const updatedUser = await UserModel.findOneAndUpdate(
-    { _id: user._id },
-    { $set: { ...user } },
-    { new: true },
-  )
-    .lean()
-    .exec();
-  return updatedUser;
+  try {
+    const updatedUser = await UserModel.findOneAndUpdate(
+      { _id: user._id },
+      { $set: { ...user } },
+      { new: true },
+    )
+      .lean()
+      .exec();
+    return updatedUser;
+  } catch (error) {
+    throw new BadRequestError(error as string);
+  }
 }
 
 export default {
   exists,
-  findPrivateProfileById,
   findById,
   findByEmail,
   findFieldsById,

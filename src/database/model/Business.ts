@@ -1,11 +1,10 @@
 import { Schema, model, Types } from 'mongoose';
-import User from './User';
 export const DOCUMENT_NAME = 'Business';
 export const COLLECTION_NAME = 'businesses';
 
 export default interface Business {
   _id?: Types.ObjectId;
-  user?: User;
+  user?: Types.ObjectId;
 
   linkId: string;
   name: string;
@@ -64,7 +63,6 @@ const schema = new Schema<Business>(
     },
     title: {
       type: Schema.Types.String,
-      required: true,
     },
     description: {
       type: Schema.Types.String,
@@ -78,15 +76,12 @@ const schema = new Schema<Business>(
     },
     coverImage: {
       type: Schema.Types.String,
-      required: true,
     },
     email: {
       type: Schema.Types.String,
-      required: true,
     },
     phone: {
       type: Schema.Types.Number,
-      required: true,
     },
 
     alternatePhone: {

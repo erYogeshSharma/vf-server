@@ -1,12 +1,11 @@
 import { Schema, model, Types } from 'mongoose';
-import Business from './Business';
 
 export const DOCUMENT_NAME = 'Visitor';
 export const COLLECTION_NAME = 'visits';
 
 export default interface Visitor {
   _id?: Types.ObjectId;
-  business: Business;
+  business: Types.ObjectId;
   ip: string;
   userAgent: string;
   visitedOn: Date;

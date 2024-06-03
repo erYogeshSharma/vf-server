@@ -1,9 +1,20 @@
+import { Types } from 'mongoose';
 import { BadRequestError } from '../../core/ApiError';
 import Business, { BusinessModel } from '../model/Business';
+import UserRepo from './UserRepo';
+import Offer, { OfferModel } from '../model/offer';
 
-async function create(business: Business): Promise<Business> {
-  const createdBusiness = await BusinessModel.create(business);
-  return createdBusiness.toObject();
+//CREATE A BUSINESS
+async function create(business: Partial<Business>): Promise<Business> {
+  const createdBusiness = (await BusinessModel.create(business)).toObject();
+
+  //ONE USER HAS ONLY ONE BUSINESS
+  await UserRepo.updateInfo({
+    _id: new Types.ObjectId(createdBusiness.user),
+    business: createdBusiness._id,
+  });
+
+  return createdBusiness;
 }
 
 async function update(
@@ -31,7 +42,7 @@ async function findUrlIfExists(linkId: string): Promise<Business | null> {
   return business;
 }
 
-async function getBusinessById(id: string): Promise<Business | null> {
+async function getBusinessById(id: Types.ObjectId): Promise<Business | null> {
   try {
     const business = await BusinessModel.findById(id).lean().exec();
     return business;
@@ -42,17 +53,29 @@ async function getBusinessById(id: string): Promise<Business | null> {
 
 async function getBusinessByLinkId(linkId: string): Promise<Business | null> {
   try {
-    const business = await BusinessModel.findOne({ linkId: linkId })
-      .populate('links.type')
+    const business = (await BusinessModel.findOne({
+      linkId: linkId,
+    })
+      .populate('links.type', 'icon title')
       .lean()
-      .exec();
+      .exec()) as Business & { offer?: Offer };
+
+    const activeOffer = await OfferModel.findOne({
+      business: business?._id,
+      isActive: true,
+    });
+
+    if (activeOffer) {
+      business.offer = activeOffer;
+    }
+
     return business;
   } catch (error) {
     throw new BadRequestError(error as string);
   }
 }
 
-async function getAllUserBusiness(userId: string): Promise<Business[]> {
+async function getAllUserBusiness(userId: Types.ObjectId): Promise<Business[]> {
   //only select the fields that are needed
 
   const businesses = await BusinessModel.find({ user: userId })
@@ -93,25 +116,9 @@ async function updateProducts(
   products: { _id: string; products: { title: string; image: string }[] },
 ): Promise<Business | null> {
   try {
-    // Check if the product array has changed
-    const existingBusiness = await BusinessModel.findOne({
-      user: userId,
-      _id: products._id,
-    })
-      .lean()
-      .exec();
-    if (
-      existingBusiness &&
-      JSON.stringify(existingBusiness.products) ===
-        JSON.stringify(products.products)
-    ) {
-      // Product array is the same, no need to update
-      return existingBusiness;
-    }
-
     // Perform the update
     const updatedBusiness = await BusinessModel.findOneAndUpdate(
-      { user: userId, businessId: products._id },
+      { user: userId, _id: products._id },
       { products: products.products },
       { new: true },
     )
