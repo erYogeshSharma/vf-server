@@ -79,7 +79,9 @@ async function getAllUserBusiness(userId: Types.ObjectId): Promise<Business[]> {
   //only select the fields that are needed
 
   const businesses = await BusinessModel.find({ user: userId })
-    .select('logo coverImage name linkId isActive title theme')
+    .select(
+      'logo coverImage name linkId isActive title theme alternatePhone address phone',
+    )
     .lean()
     .exec();
   return businesses;
