@@ -19,6 +19,7 @@ export class JwtPayload {
   iat: number;
   exp: number;
   prm: string;
+  role: string;
 
   constructor(
     issuer: string,
@@ -26,6 +27,7 @@ export class JwtPayload {
     subject: string,
     param: string,
     validity: number,
+    role: string,
   ) {
     this.iss = issuer;
     this.aud = audience;
@@ -33,6 +35,7 @@ export class JwtPayload {
     this.iat = Math.floor(Date.now() / 1000);
     this.exp = this.iat + validity;
     this.prm = param;
+    this.role = role;
   }
 }
 

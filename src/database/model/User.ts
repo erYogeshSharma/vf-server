@@ -1,5 +1,4 @@
 import { model, Schema, Types } from 'mongoose';
-import Role from './Role';
 
 export const DOCUMENT_NAME = 'User';
 export const COLLECTION_NAME = 'users';
@@ -10,13 +9,17 @@ export default interface User {
   profilePicUrl?: string;
   email?: string;
   password?: string;
-  roles: Role[];
+  role: 'ADMIN' | 'USER';
   verified?: boolean;
-  status?: boolean;
+
   createdAt?: Date;
   business?: Types.ObjectId;
   resetPasswordToken?: string;
   updatedAt?: Date;
+
+  referralCode?: string;
+  referredBy?: Types.ObjectId;
+  plan?: Types.ObjectId;
 }
 
 const schema = new Schema<User>(
@@ -30,7 +33,16 @@ const schema = new Schema<User>(
       type: Schema.Types.String,
       trim: true,
     },
-
+    referralCode: {
+      type: Schema.Types.String,
+      trim: true,
+      unique: true,
+      sparse: true, // allows null
+    },
+    referredBy: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+    },
     email: {
       type: Schema.Types.String,
       unique: true,
@@ -51,27 +63,23 @@ const schema = new Schema<User>(
       ref: 'Business',
       required: false,
     },
-    roles: {
-      type: [
-        {
-          type: Schema.Types.ObjectId,
-          ref: 'Role',
-        },
-      ],
+    role: {
+      type: Schema.Types.String,
       required: true,
-      select: false,
+      default: 'USER',
     },
     verified: {
       type: Schema.Types.Boolean,
       default: false,
     },
-    status: {
-      type: Schema.Types.Boolean,
-      default: true,
+    plan: {
+      type: Schema.Types.ObjectId,
+      ref: 'Plan',
     },
   },
   {
     versionKey: false,
+    timestamps: true,
   },
 );
 

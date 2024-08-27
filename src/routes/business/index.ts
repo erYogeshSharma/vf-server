@@ -22,4 +22,7 @@ router.use('/visits', visitsRout);
 import offerRoutes from './offer';
 router.use('/offer', offerRoutes);
 
+import domainRoutes from './domain-routes';
+router.use('/domains', domainRoutes);
+
 export default router;

@@ -25,7 +25,6 @@ import {
 } from '../../types/app-request';
 import Logger from '../../core/Logger';
 import User from '../../database/model/User';
-import { RoleCode } from '../../database/model/Role';
 import authentication from '../../auth/authentication';
 import JWT from '../../core/JWT';
 import { Types } from 'mongoose';
@@ -83,7 +82,7 @@ router.post(
       } as User,
       accessTokenKey,
       refreshTokenKey,
-      RoleCode.LEARNER,
+      req?.body?.referralCode,
     );
 
     const tokens = await createTokens(
@@ -92,6 +91,8 @@ router.post(
       keystore.secondaryKey,
     );
     const userData = await getUserData(createdUser);
+
+    console.log({ userData });
 
     new SuccessResponse('Signup Successful', {
       user: userData,
@@ -108,7 +109,6 @@ router.post(
     req.accessToken = getAccessToken(req.headers.authorization); // Express headers are auto converted to lowercase
 
     const accessTokenPayload = await JWT.decode(req.accessToken);
-    console.log({ accessTokenPayload });
     validateTokenData(accessTokenPayload);
 
     const user = await UserRepo.findById(

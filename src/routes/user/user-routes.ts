@@ -82,4 +82,13 @@ router.post(
   }),
 );
 
+//GET REFERRALS
+router.get(
+  '/referrals',
+  asyncHandler(async (req: ProtectedRequest, res) => {
+    const referrals = await UserRepo.getReferrals(req.user._id);
+    new SuccessResponse('success', referrals).send(res);
+  }),
+);
+
 export default router;

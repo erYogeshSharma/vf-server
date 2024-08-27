@@ -41,6 +41,7 @@ export const createTokens = async (
       user._id.toString(),
       accessTokenKey,
       tokenInfo.accessTokenValidity,
+      user.role,
     ),
   );
 
@@ -53,6 +54,7 @@ export const createTokens = async (
       user._id.toString(),
       refreshTokenKey,
       tokenInfo.refreshTokenValidity,
+      user.role,
     ),
   );
 
