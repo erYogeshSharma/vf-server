@@ -9,6 +9,9 @@ async function exists(id: Types.ObjectId): Promise<boolean> {
   return user !== null && user !== undefined;
 }
 
+function generateReferralCode() {
+  return Math.random().toString(36).substring(2, 8).toUpperCase();
+}
 // contains critical information of the user
 async function findById(id: Types.ObjectId): Promise<User | null> {
   return UserModel.findOne({ _id: id, status: true })
@@ -22,10 +25,22 @@ async function findById(id: Types.ObjectId): Promise<User | null> {
 }
 
 async function findByEmail(email: string): Promise<User | null> {
-  return UserModel.findOne({ email: email })
-    .select('+email +password +role +name +profilePicUrl +referralCode')
-    .lean()
-    .exec();
+  try {
+    const user = await UserModel.findOne({ email: email })
+      .select('+email +password +role +name +profilePicUrl +referralCode')
+      .lean()
+      .exec();
+    if (user?.email && !user?.referralCode) {
+      user.referralCode =
+        user?.name?.replace(' ', '')?.toUpperCase() + generateReferralCode();
+      await UserModel.updateOne({ _id: user._id }, { $set: { ...user } })
+        .lean()
+        .exec();
+    }
+    return user;
+  } catch (error) {
+    throw new BadRequestError(error as string);
+  }
 }
 
 async function findFieldsById(
@@ -52,10 +67,6 @@ async function create(
   if (referralCode) {
     const referrer = await UserModel.findOne({ referralCode: referralCode });
     referredBy = referrer ? referrer._id : null;
-  }
-
-  function generateReferralCode() {
-    return Math.random().toString(36).substring(2, 8).toUpperCase();
   }
 
   const createdUser = await UserModel.create({
