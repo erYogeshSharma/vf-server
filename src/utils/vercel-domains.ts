@@ -11,12 +11,8 @@ export const validDomainRegex = new RegExp(
 );
 
 export const addDomainToVercel = async (domain: string) => {
-
   try {
-    
-  } catch (error) {
-    
-  }
+  } catch (error) {}
   return await fetch(
     `https://api.vercel.com/v10/projects/${
       vercel_tokens.PROJECT_ID_VERCEL
@@ -39,9 +35,11 @@ export const addDomainToVercel = async (domain: string) => {
         // }),
       }),
     },
-  ).then((res) => res.json()).catch((error) => {
-    return error;
-  }
+  )
+    .then((res) => res.json())
+    .catch((error) => {
+      return error;
+    });
 };
 
 export const getDomainResponse = async (
@@ -70,6 +68,7 @@ export const getDomainResponse = async (
 export const getConfigResponse = async (
   domain: string,
 ): Promise<DomainConfigResponse> => {
+  console.log({ domain });
   return await fetch(
     `https://api.vercel.com/v6/domains/${domain}/config${
       vercel_tokens.TEAM_ID_VERCEL

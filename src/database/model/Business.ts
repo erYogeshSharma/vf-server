@@ -40,6 +40,7 @@ export default interface Business {
     link: string;
   }[];
 
+  customDomain: string;
   calender: string;
 
   isActive?: boolean;
@@ -161,6 +162,10 @@ const schema = new Schema<Business>(
     calender: {
       type: Schema.Types.String,
       default: `{"mon":"T-09:00 AM-10:00 PM","tue":"T-09:00 AM-10:00 PM","wed":"T-09:00 AM-10:00 PM","thu":"T-09:00 AM-10:00 PM","fri":"T-09:00 AM-10:00 PM","sat":"T-09:00 AM-10:00 PM","sun":"T-09:00 AM-10:00 PM"}`,
+    },
+
+    customDomain: {
+      type: Schema.Types.String,
     },
   },
   {

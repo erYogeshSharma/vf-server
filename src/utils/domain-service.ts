@@ -1,10 +1,8 @@
 import { DomainVerificationStatusProps } from 'domains';
 import {
   addDomainToVercel,
-  //   getApexDomain,
   getConfigResponse,
   getDomainResponse,
-  //   getSubdomain,
   removeDomainFromVercelProject,
   validDomainRegex,
   verifyDomain,
@@ -37,7 +35,7 @@ export async function verifyDomainStatus({
     const verificationJson = await verifyDomain(domain);
 
     // domain was just verified
-    if (verificationJson && verificationJson.verified) {
+    if (verificationJson && verificationJson?.verified) {
       status = 'Valid Configuration';
     }
   } else if (configJson.misconfigured) {
@@ -52,56 +50,44 @@ export async function verifyDomainStatus({
   };
 }
 
-type SelectSite = {
-  //   id: string;
-  //   name: string | null;
-  //   image: string | null;
-  subdomain: string | null;
-  //   description: string | null;
-  //   logo: string | null;
-  //   font: string;
-  //   imageBlurhash: string | null;
-  customDomain: string | null;
-  //   message404: string | null;
-  //   createdAt: Date;
-  //   updatedAt: Date;
-  //   userId: string | null;
-};
-export async function addDomainToVercelProject(data: {
-  domain: string;
-  site: SelectSite;
-}) {
-  const key = 'customDomain';
-  const value = data.domain;
-  const site = data.site;
+export async function addDomainToVercelProject(
+  previousDomain: string,
+  newDomain: string,
+) {
   try {
     let response;
 
-    if (key === 'customDomain') {
-      if (value.includes('vercel.pub')) {
-        return {
-          error: 'Cannot use vercel.pub subdomain as your custom domain',
-        };
+    if (newDomain.includes('vercel.pub')) {
+      return {
+        error: 'Cannot use vercel.pub subdomain as your custom domain',
+      };
+      // if the custom domain is valid, we need to add it to Vercel
+    } else if (validDomainRegex.test(newDomain)) {
+      //TODO:Update the site in DB with the new custom domain
 
-        // if the custom domain is valid, we need to add it to Vercel
-      } else if (validDomainRegex.test(value)) {
-        //TODO:Update the site in DB with the new custom domain
+      // response = await Promise.all([
+      //   addDomainToVercel(newDomain),
+      //   // Optional: add www subdomain as well and redirect to apex domain
+      //   // addDomainToVercel(`www.${value}`),
+      // ]);
 
-        response = await Promise.all([
-          addDomainToVercel(value),
-          // Optional: add www subdomain as well and redirect to apex domain
-          addDomainToVercel(`www.${value}`),
-        ]);
-        // empty value means the user wants to remove the custom domain
-      } else if (value === '') {
-        //TODO: set custom domain to null in the site settings
-      }
+      response = await addDomainToVercel(newDomain);
+      // empty value means the user wants to remove the custom domain
+    } else if (newDomain === '') {
+      //TODO: set custom domain to null in the site settings
+    }
 
-      // if the site had a different customDomain before, we need to remove it from Vercel
-      if (site.customDomain && site.customDomain !== value) {
-        response = await removeDomainFromVercelProject(site.customDomain);
+    // if the site had a different customDomain before, we need to remove it from Vercel
+    const oldDomainStatus = await verifyDomain(previousDomain);
 
-        /* Optional: remove domain from Vercel team 
+    if (
+      previousDomain &&
+      newDomain !== previousDomain &&
+      !('error' in oldDomainStatus)
+    ) {
+      response = await removeDomainFromVercelProject(previousDomain);
+
+      /* Optional: remove domain from Vercel team 
 
           // first, we need to check if the apex domain is being used by other sites
           const apexDomain = getApexDomain(`https://${site.customDomain}`);
@@ -121,13 +107,12 @@ export async function addDomainToVercelProject(data: {
           }
           
           */
-      }
     }
 
     console.log(
       'Updated site data! Revalidating tags: ',
-      `${site.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}-metadata`,
-      `${site.customDomain}-metadata`,
+      `${newDomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}-metadata`,
+      `${newDomain}-metadata`,
     );
 
     //TODO Check whats happening here
@@ -140,7 +125,7 @@ export async function addDomainToVercelProject(data: {
   } catch (error: any) {
     if (error.code === 'P2002') {
       return {
-        error: `This ${key} is already taken`,
+        error: `This ${newDomain} is already taken`,
       };
     } else {
       return {

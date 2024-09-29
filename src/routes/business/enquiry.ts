@@ -16,7 +16,6 @@ router.get(
   asyncHandler(async (req: ProtectedRequest, res) => {
     const user = req.user as User;
 
-    console.log({ bsId: user.business });
     if (!user.business) {
       throw new BadRequestError('User does not have a business');
     }
