@@ -10,10 +10,14 @@ export async function getUserData(user: User) {
   const data = _.pick(user, [
     '_id',
     'name',
-    'roles',
+    'role',
     'profilePicUrl',
     'email',
     'business',
+    'createdAt',
+    'updatedAt',
+    'role',
+    'referralCode',
   ]);
   return data;
 }

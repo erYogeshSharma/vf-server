@@ -59,3 +59,9 @@ export const app = {
   clientURL: process.env.CLIENT_URL,
   serverURL: process.env.SERVER_URL,
 };
+
+export const vercel_tokens = {
+  AUTH_BEARER_TOKEN: process.env.AUTH_BEARER_TOKEN,
+  PROJECT_ID_VERCEL: process.env.PROJECT_ID_VERCEL,
+  TEAM_ID_VERCEL: process.env.TEAM_ID_VERCEL,
+};

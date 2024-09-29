@@ -1,5 +1,4 @@
 import User, { UserModel } from '../model/User';
-import { RoleModel } from '../model/Role';
 import { Types } from 'mongoose';
 import KeystoreRepo from './KeystoreRepo';
 import Keystore from '../model/Keystore';
@@ -13,9 +12,9 @@ async function exists(id: Types.ObjectId): Promise<boolean> {
 // contains critical information of the user
 async function findById(id: Types.ObjectId): Promise<User | null> {
   return UserModel.findOne({ _id: id, status: true })
-    .select('+email +password +roles +resetPasswordToken +business')
+    .select('+email +password +role +resetPasswordToken +business')
     .populate({
-      path: 'roles',
+      path: 'role',
       match: { status: true },
     })
     .lean()
@@ -24,14 +23,7 @@ async function findById(id: Types.ObjectId): Promise<User | null> {
 
 async function findByEmail(email: string): Promise<User | null> {
   return UserModel.findOne({ email: email })
-    .select(
-      '+email +password +roles +gender +dob +grade +country +state +city +school +bio +hobbies',
-    )
-    .populate({
-      path: 'roles',
-      match: { status: true },
-      select: { code: 1 },
-    })
+    .select('+email +password +role +name +profilePicUrl +referralCode')
     .lean()
     .exec();
 }
@@ -53,35 +45,37 @@ async function create(
   user: User,
   accessTokenKey: string,
   refreshTokenKey: string,
-  roleCode: string,
+  referralCode: string,
 ): Promise<{ user: User; keystore: Keystore }> {
-  const now = new Date();
-
-  const role = await RoleModel.findOne({ code: roleCode })
-    .select('+code')
-    .lean()
-    .exec();
-  // if (!role) throw new InternalError('Role must be defined');
-  if (!role) {
-    const r = await RoleModel.create({
-      code: roleCode,
-      status: true,
-      createdAt: now,
-      updatedAt: now,
-    });
-
-    user.roles = [r];
+  // check if the user has a referral code
+  let referredBy: Types.ObjectId | null = null;
+  if (referralCode) {
+    const referrer = await UserModel.findOne({ referralCode: referralCode });
+    referredBy = referrer ? referrer._id : null;
   }
 
-  user.createdAt = user.updatedAt = now;
-  const createdUser = await UserModel.create(user);
+  function generateReferralCode() {
+    return Math.random().toString(36).substring(2, 8).toUpperCase();
+  }
+
+  const createdUser = await UserModel.create({
+    name: user.name,
+    email: user.email?.toLowerCase(),
+    profilePicUrl: user.profilePicUrl,
+    password: user.password,
+    referralCode:
+      user.name?.replace(' ', '')?.toUpperCase() + generateReferralCode(),
+    referredBy: referredBy ? referredBy : null,
+    role: 'USER',
+  });
   const keystore = await KeystoreRepo.create(
     createdUser,
     accessTokenKey,
     refreshTokenKey,
   );
+
   return {
-    user: { ...createdUser.toObject(), roles: user.roles },
+    user: { ...createdUser.toObject(), role: 'USER' },
     keystore: keystore,
   };
 }
@@ -118,6 +112,34 @@ async function updateInfo(user: Partial<User>): Promise<any> {
   }
 }
 
+async function getAllUsers(): Promise<User[]> {
+  try {
+    const users = await UserModel.find({ status: true })
+      .select(
+        'createdAt updatedAt name email phone status profilePicUrl business',
+      )
+      .lean()
+      .exec();
+    return users;
+  } catch (error) {
+    throw new BadRequestError(error as string);
+  }
+}
+
+async function getReferrals(id: Types.ObjectId): Promise<User[]> {
+  try {
+    const users = await UserModel.find({ referredBy: id })
+      .select(
+        'createdAt updatedAt name email phone status profilePicUrl business',
+      )
+      .lean()
+      .exec();
+    return users;
+  } catch (error) {
+    throw new BadRequestError(error as string);
+  }
+}
+
 export default {
   exists,
   findById,
@@ -127,4 +149,6 @@ export default {
   create,
   update,
   updateInfo,
+  getAllUsers,
+  getReferrals,
 };

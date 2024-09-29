@@ -80,7 +80,7 @@ async function getAllUserBusiness(userId: Types.ObjectId): Promise<Business[]> {
 
   const businesses = await BusinessModel.find({ user: userId })
     .select(
-      'logo coverImage name linkId isActive title theme alternatePhone address phone',
+      'logo coverImage name linkId isActive title theme alternatePhone address phone customDomain',
     )
     .lean()
     .exec();
@@ -112,7 +112,26 @@ async function updateAddress(
     throw new BadRequestError(error as string);
   }
 }
+async function updateCustomDomain(
+  businessId: string,
+  customDomain: string,
+): Promise<Business | null> {
+  try {
+    const updatedBusiness = await BusinessModel.findOneAndUpdate(
+      { _id: businessId },
+      {
+        customDomain: customDomain,
+      },
+      { new: true },
+    )
+      .lean()
+      .exec();
 
+    return updatedBusiness;
+  } catch (error) {
+    throw new BadRequestError(error as string);
+  }
+}
 async function updateProducts(
   userId: string,
   products: { _id: string; products: { title: string; image: string }[] },
@@ -235,4 +254,5 @@ export default {
   updateSettings,
   getBusinessByLinkId,
   updateCalender,
+  updateCustomDomain,
 };

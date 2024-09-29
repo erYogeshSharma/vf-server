@@ -13,11 +13,13 @@ import { BadRequestError } from '../../core/ApiError';
 import EnquiryRepo from '../../database/repository/EnquiryRepo';
 import VisitsRepo from '../../database/repository/VisitsRepo';
 import { Types } from 'mongoose';
+import Business, { BusinessModel } from '../../database/model/Business';
+import Offer from '../../database/model/offer';
 
 const router = express.Router();
 
 /* -------------------------------------------------------------------------- */
-/*                         GET BUSINESS ID AVAILABILITY                        */
+/*                         GET BUSINESS BY ID                        */
 /* -------------------------------------------------------------------------- */
 router.get(
   '/:id',
@@ -33,6 +35,30 @@ router.get(
       return new FailureMsgResponse('Not found').send(res);
     }
     return new SuccessResponse('success', business).send(res);
+  }),
+);
+/* -------------------------------------------------------------------------- */
+/*                         GET BUSINESS ID BY DOMAIN                          */
+/* -------------------------------------------------------------------------- */
+router.get(
+  '/customdomain/:domain',
+  asyncHandler(async (req: PublicRequest, res) => {
+    const { domain } = req.params;
+    if (!domain) {
+      return new FailureMsgResponse('Id is required').send(res);
+    }
+    try {
+      const business = (await BusinessModel.findOne({
+        customDomain: domain,
+      })
+        .select('name description logo customDomain linkId')
+        .lean()
+        .exec()) as Business & { offer?: Offer };
+
+      return new SuccessResponse('success', business).send(res);
+    } catch (error) {
+      throw new BadRequestError(error as string);
+    }
   }),
 );
 
