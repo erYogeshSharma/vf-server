@@ -78,7 +78,7 @@ async function create(
       user.name?.replace(' ', '')?.toUpperCase() + generateReferralCode(),
     referredBy: referredBy ? referredBy : null,
     role: 'USER',
-    is_paid_plan: 'ACTIVE',
+    is_paid_plan: 'INACTIVE',
     plan_start_date: new Date(),
     plan_end_date: new Date(new Date().setDate(new Date().getDate() + 7)), // Add 7 days to the current date
   });
