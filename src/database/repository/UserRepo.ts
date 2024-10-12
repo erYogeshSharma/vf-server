@@ -142,7 +142,7 @@ async function getAllUsers(): Promise<User[]> {
         user.plan_end_date = new Date(
           new Date().setDate(new Date().getDate() + 7),
         );
-        user.is_paid_plan = 'ACTIVE';
+        user.is_paid_plan = 'INACTIVE';
       }
       await UserModel.updateOne({ _id: user._id }, { $set: { ...user } });
     }
