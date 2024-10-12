@@ -18,6 +18,9 @@ export async function getUserData(user: User) {
     'updatedAt',
     'role',
     'referralCode',
+    'is_paid_plan',
+    'plan_start_date',
+    'plan_end_date',
   ]);
   return data;
 }

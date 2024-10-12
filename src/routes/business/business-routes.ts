@@ -51,7 +51,6 @@ router.post(
       if (urlExists)
         throw new BadRequestError('Business Already Exists with the ID');
 
-      console.log(req.user);
       if (req.user.business) {
         throw new BadRequestError('User already has a business');
       }

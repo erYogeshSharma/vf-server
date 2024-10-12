@@ -47,6 +47,7 @@ export async function verifyDomainStatus({
   return {
     status,
     domainJson,
+    configJson,
   };
 }
 

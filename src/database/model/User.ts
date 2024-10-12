@@ -19,7 +19,10 @@ export default interface User {
 
   referralCode?: string;
   referredBy?: Types.ObjectId;
-  plan?: Types.ObjectId;
+
+  plan_start_date?: Date;
+  plan_end_date?: Date;
+  is_paid_plan?: 'ACTIVE' | 'INACTIVE';
 }
 
 const schema = new Schema<User>(
@@ -72,9 +75,16 @@ const schema = new Schema<User>(
       type: Schema.Types.Boolean,
       default: false,
     },
-    plan: {
-      type: Schema.Types.ObjectId,
-      ref: 'Plan',
+    plan_start_date: {
+      type: Schema.Types.Date,
+    },
+    plan_end_date: {
+      type: Schema.Types.Date,
+    },
+    is_paid_plan: {
+      type: Schema.Types.String,
+      enum: ['ACTIVE', 'INACTIVE'],
+      default: 'INACTIVE',
     },
   },
   {

@@ -92,8 +92,6 @@ router.post(
     );
     const userData = await getUserData(createdUser);
 
-    console.log({ userData });
-
     new SuccessResponse('Signup Successful', {
       user: userData,
       tokens: tokens,

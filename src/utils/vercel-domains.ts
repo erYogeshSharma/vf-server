@@ -4,7 +4,6 @@ import {
   DomainVerificationResponse,
 } from 'domains';
 import { vercel_tokens } from '../config';
-console.log({ vercel_tokens });
 // courtesy of ChatGPT: https://sharegpt.com/c/pUYXtRs
 export const validDomainRegex = new RegExp(
   /^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$/,
@@ -68,7 +67,6 @@ export const getDomainResponse = async (
 export const getConfigResponse = async (
   domain: string,
 ): Promise<DomainConfigResponse> => {
-  console.log({ domain });
   return await fetch(
     `https://api.vercel.com/v6/domains/${domain}/config${
       vercel_tokens.TEAM_ID_VERCEL

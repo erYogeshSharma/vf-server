@@ -23,5 +23,25 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "terminal.integrated.shellIntegration.enabled": true,
   "editor.fontFamily": "JetBrains Mono",
-  "editor.fontWeight": "500"
+  "editor.fontWeight": "500",
+  "workbench.colorCustomizations": {
+    "activityBar.activeBackground": "#924e5c",
+    "activityBar.background": "#924e5c",
+    "activityBar.foreground": "#e7e7e7",
+    "activityBar.inactiveForeground": "#e7e7e799",
+    "activityBarBadge.background": "#69a659",
+    "activityBarBadge.foreground": "#15202b",
+    "commandCenter.border": "#e7e7e799",
+    "sash.hoverBorder": "#924e5c",
+    "statusBar.background": "#713c47",
+    "statusBar.foreground": "#e7e7e7",
+    "statusBarItem.hoverBackground": "#924e5c",
+    "statusBarItem.remoteBackground": "#713c47",
+    "statusBarItem.remoteForeground": "#e7e7e7",
+    "titleBar.activeBackground": "#713c47",
+    "titleBar.activeForeground": "#e7e7e7",
+    "titleBar.inactiveBackground": "#713c4799",
+    "titleBar.inactiveForeground": "#e7e7e799"
+  },
+  "peacock.color": "#713c47"
 }
