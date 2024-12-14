@@ -48,10 +48,86 @@ router.post(
     });
 
     const emailData = {
-      from: { email: sg.mailFrom, name: 'MerchantLive' },
+      from: { email: sg.mailFrom, name: 'BharatBizPortal' },
       to: user.email,
-      subject: 'Reset you password',
-      html: `<strong>To reset your password  <a href="${app.clientURL}/reset-password/${resetPasswordToken}"> </a>${app.clientURL}/reset-password/${resetPasswordToken} </strong>`,
+      subject: 'Reset Your Password',
+      html: `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          margin: 0;
+          padding: 0;
+          background-color: #f9f9f9;
+          color: #333333;
+          line-height: 1.5;
+        }
+        .container {
+          max-width: 600px;
+          margin: 20px auto;
+          background-color: #ffffff;
+          padding: 20px;
+          border: 1px solid #e0e0e0;
+          border-radius: 5px;
+        }
+        .header {
+          font-size: 24px;
+          font-weight: bold;
+          text-align: center;
+          margin-bottom: 20px;
+        }
+        .content {
+          font-size: 16px;
+          margin-bottom: 20px;
+        }
+        .btn {
+          display: block;
+          width: fit-content;
+          margin: 0 auto 20px auto;
+          padding: 10px 20px;
+          background-color: #007BFF;
+          color: #fff;
+          text-decoration: none;
+          border-radius: 5px;
+          text-align: center;
+          font-size: 16px;
+        }
+        .btn:hover {
+          background-color: #0056b3;
+        }
+        .footer {
+          font-size: 12px;
+          text-align: center;
+          color: #888888;
+          margin-top: 20px;
+        }
+        .link-text{
+          font-size: 10px;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">Reset Your Password</div>
+        <div class="content">
+          <p>Hello,</p>
+          <p>We received a request to reset your password for your BharatBizPortal account. Please click the button below to reset it:</p>
+          <a href="${app.clientURL}/reset-password/${resetPasswordToken}" class="btn">Reset Password</a>
+          <p>If you didn't request this, you can safely ignore this email.</p>
+          <p>Alternatively, you can copy and paste this link into your browser:</p>
+          <p><a class='link-text' href="${app.clientURL}/reset-password/${resetPasswordToken}">${app.clientURL}/reset-password/${resetPasswordToken}</a></p>
+        </div>
+        <div class="footer">
+          &copy; ${new Date().getFullYear()} BharatBizPortal. All rights reserved.
+        </div>
+      </div>
+    </body>
+    </html>
+  `,
     };
 
     await sendmail(emailData);
